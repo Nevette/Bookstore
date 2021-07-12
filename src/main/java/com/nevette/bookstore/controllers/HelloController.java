@@ -1,4 +1,4 @@
-package com.nevette.bookstore.Controllers;
+package com.nevette.bookstore.controllers;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
