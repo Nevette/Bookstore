@@ -14,7 +14,7 @@ public class BookController {
     private final BookRepository bookRepository;
 
     @Autowired
-    public BookController(BookRepository bookRepository) {
+    protected BookController(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
 
