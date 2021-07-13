@@ -10,11 +10,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.function.EntityResponse;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class BookControllerTest {
 
@@ -44,6 +42,16 @@ public class BookControllerTest {
         Book bookResponse = captor.getValue();
         assertEquals(book.getAuthor(), bookResponse.getAuthor());
         assertEquals(book.getIsbn(), bookResponse.getIsbn());
-        assertEquals(204, responseEntity.getStatusCodeValue());
+        assertEquals(200, responseEntity.getStatusCodeValue());
+    }
+
+    @Test
+    public void bookControllerDeletesBook(){
+        BookDTO book = new BookDTO(9788375176438l, "Zbrodnia i kara", "Fiodor Dostojewski", 2017, 29.61f);
+        ResponseEntity responseEntity = bookController.deleteBook(book.getIsbn());
+        ArgumentCaptor<Book> captor = ArgumentCaptor.forClass(Book.class);
+        verify(bookRepository, times(1)).findByIsbn(book.getIsbn());
+        verify(bookRepository, times(1)).delete(captor.capture());
+        assertEquals(200, responseEntity.getStatusCodeValue());
     }
 }

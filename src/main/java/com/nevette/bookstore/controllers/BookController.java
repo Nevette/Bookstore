@@ -4,11 +4,16 @@ import com.nevette.bookstore.dtos.BookDTO;
 import com.nevette.bookstore.entities.Book;
 import com.nevette.bookstore.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@Controller
+import java.util.Objects;
+
+@RestController
 public class BookController {
 
     private final BookRepository bookRepository;
@@ -27,6 +32,41 @@ public class BookController {
         book.setReleaseYear(request.getReleaseYear());
         book.setPrice(request.getPrice());
         bookRepository.save(book);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/book")
+    public ResponseEntity deleteBook(@RequestParam("isbn") Long isbn){
+        Book book = bookRepository.findByIsbn(isbn);
+        bookRepository.delete(book);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/book")
+    public BookDTO getBook(@RequestParam("isbn") Long isbn){
+        Book book = bookRepository.findByIsbn(isbn);
+        return new BookDTO(book.getIsbn(), book.getTitle(), book.getAuthor(), book.getReleaseYear(), book.getPrice());
+    }
+
+    @PutMapping("/book")
+    public ResponseEntity updateBook(@RequestBody BookDTO request) {
+        if (request.getIsbn() == null){
+            return ResponseEntity.badRequest().build();
+        }
+        Book book = bookRepository.findByIsbn(request.getIsbn());
+        if (request.getAuthor() != null){
+            book.setAuthor(request.getAuthor());
+        }
+        if (request.getTitle() != null){
+            book.setTitle(request.getTitle());
+        }
+        if (request.getPrice() != null){
+            book.setPrice(request.getPrice());
+        }
+        if (request.getReleaseYear() != null){
+            book.setReleaseYear(request.getReleaseYear());
+        }
+        bookRepository.save(book);
+        return ResponseEntity.ok().build();
     }
 }
