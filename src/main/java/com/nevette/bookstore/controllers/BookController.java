@@ -4,14 +4,8 @@ import com.nevette.bookstore.dtos.BookDTO;
 import com.nevette.bookstore.entities.Book;
 import com.nevette.bookstore.repositories.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.Objects;
 
 @RestController
 public class BookController {
@@ -32,14 +26,14 @@ public class BookController {
         book.setReleaseYear(request.getReleaseYear());
         book.setPrice(request.getPrice());
         bookRepository.save(book);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/book")
     public ResponseEntity deleteBook(@RequestParam("isbn") Long isbn){
         Book book = bookRepository.findByIsbn(isbn);
         bookRepository.delete(book);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/book")
@@ -67,6 +61,6 @@ public class BookController {
             book.setReleaseYear(request.getReleaseYear());
         }
         bookRepository.save(book);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
